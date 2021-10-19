@@ -1,0 +1,160 @@
+
+--taking the median rent per state of a two bedroom apartment
+
+
+select state_alpha as state 
+,avg(fmr2) as avg_2bdrm_2017
+from fmr40_2017
+group by state_alpha
+order by avg(fmr2) DESC
+
+select state_alpha as state 
+,avg(fmr_2) as avg_2bdrm_2019
+from fmr40_2019
+group by state_alpha
+order by avg(fmr_2) DESC
+
+select state_alpha as state 
+,avg(fmr_2) as avg_2bdrm_2021
+from fmr40_2021
+group by state_alpha
+order by avg(fmr_2) DESC
+
+--joining on 2 bdrm rent by state across each of the three years
+
+
+select a.state_alpha as state 
+,a.fmr2 as two_bdrm_2017
+,b.fmr_2 as two_bdrm_2019
+,c.fmr_2 as two_bdrm_2021
+from fmr40_2017 a
+    join fmr40_2019 b 
+    on a.state_alpha = b.state_alpha 
+    join fmr40_2021 c
+    on a.state_alpha = c.state_alpha
+group by a.state_alpha, a.fmr2, b.fmr_2, c.fmr_2
+order by a.fmr2 DESC
+
+
+--comparing average rent per state across the three years, first will create a view
+
+create VIEW MedianRentComparison2017_2019_2021 AS
+select a.state_alpha as state 
+,a.fmr2 as two_bdrm_2017
+,b.fmr_2 as two_bdrm_2019
+,c.fmr_2 as two_bdrm_2021
+from fmr40_2017 a
+    join fmr40_2019 b 
+    on a.state_alpha = b.state_alpha 
+    join fmr40_2021 c
+    on a.state_alpha = c.state_alpha
+group by a.state_alpha, a.fmr2, b.fmr_2, c.fmr_2
+
+select * from MedianRentComparison2017_2019_2021
+
+--querying the new view in order to compare average rent across the three years
+
+select state
+,avg(two_bdrm_2017) as average_two_bdrm_2017
+,avg(two_bdrm_2019) as average_two_bdrm_2019
+,avg(two_bdrm_2021) as average_two_bdrm_2021
+from MedianRentComparison2017_2019_2021
+group by state
+order by avg(two_bdrm_2021) DESC
+
+
+--determining greatest increase in dollar amount from 2019-2021
+
+
+select  state
+,avg(two_bdrm_2021) - avg(two_bdrm_2019) as difference_in_price
+from MedianRentComparison2017_2019_2021
+group by state
+order by avg(two_bdrm_2021) - avg(two_bdrm_2019) DESC
+
+
+--determining greatest increase in dollar amount from 2017-2019
+
+
+select  state
+,avg(two_bdrm_2019) - avg(two_bdrm_2017) as difference_in_price
+from MedianRentComparison2017_2019_2021
+group by state
+order by avg(two_bdrm_2019) - avg(two_bdrm_2017) DESC
+
+
+--determining greatest increase in dollar amount from 2017-2021
+
+
+select  state
+,avg(two_bdrm_2021) - avg(two_bdrm_2017) as difference_in_price
+from MedianRentComparison2017_2019_2021
+group by state
+order by avg(two_bdrm_2021) - avg(two_bdrm_2017) DESC
+
+
+--percentage increase
+
+select  state
+,100*(avg(two_bdrm_2019) - avg(two_bdrm_2017))/avg(two_bdrm_2017) as percentage_increase_in_price_17_19
+,100*(avg(two_bdrm_2021) - avg(two_bdrm_2019))/avg(two_bdrm_2019) as percentage_increase_in_price_19_21
+from MedianRentComparison2017_2019_2021
+group by state
+order by 100*(avg(two_bdrm_2019) - avg(two_bdrm_2017))/avg(two_bdrm_2017) DESC
+
+
+--diference in percentage increase
+
+
+select  state
+,100*(avg(two_bdrm_2021) - avg(two_bdrm_2019))/avg(two_bdrm_2019) - 100*(avg(two_bdrm_2019) - avg(two_bdrm_2017))/avg(two_bdrm_2017)  as difference_in_percentage_increase_in_price_21_17
+from MedianRentComparison2017_2019_2021
+group by state
+order by 100*(avg(two_bdrm_2021) - avg(two_bdrm_2019))/avg(two_bdrm_2019) - 100*(avg(two_bdrm_2019) - avg(two_bdrm_2017))/avg(two_bdrm_2017) DESC
+
+
+--querying data from 1983-2021 on fair market rent for the 40th percentile of two bedroom apartments 
+
+
+select avg(fmr21) as '2021'
+,avg(fmr20) as '2020'
+,avg(fmr19) as '2019'
+,avg(fmr18) as '2018'
+,avg(fmr17) as '2017'
+,avg(fmr16) as '2016'
+,avg(fmr15) as '2015'
+,avg(fmr14) as '2014'
+,avg(fmr13) as '2013'
+,avg(fmr12) as '2012'
+,avg(fmr11) as '2011'
+,avg(fmr10) as '2010'
+,avg(fmr09) as '2009'
+,avg(fmr08) as '2008'
+,avg(fmr07) as '2007'
+,avg(fmr06) as '2006'
+,avg(fmr05) as '2005'
+,avg(fmr04) as '2004'
+,avg(fmr03) as '2003'
+,avg(fmr02) as '2002'
+,avg(fmr01) as '2001'
+,avg(fmr00) as '2000'
+,avg(fmr99) as '1999'
+,avg(fmr98) as '1998'
+,avg(fmr97) as '1997'
+,avg(fmr96) as '1996'
+,avg(fmr95) as '1995'
+,avg(fmr94) as '1994'
+,avg(fmr93) as '1993'
+,avg(fmr92) as '1992'
+,avg(fmr91) as '1991'
+,avg(fmr90) as '1990'
+,avg(fmr89) as '1989'
+,avg(fmr88) as '1988'
+,avg(fmr87) as '1987'
+,avg(fmr86) as '1986'
+,avg(fmr85) as '1985'
+,avg(fmr83) as '1983'
+,statenum
+from two_bedroom_83_21
+group by statenum
+order by statenum ASC
