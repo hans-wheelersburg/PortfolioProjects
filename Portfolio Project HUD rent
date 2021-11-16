@@ -1,5 +1,5 @@
 
---taking the median rent per state of a two bedroom apartment
+--taking the average rent per state of a two bedroom apartment
 
 
 select state_alpha as state 
@@ -38,7 +38,7 @@ order by a.fmr2 DESC
 
 --comparing average rent per state across the three years, first will create a view
 
-create VIEW MedianRentComparison2017_2019_2021 AS
+create VIEW AverageRentComparison2017_2019_2021 AS
 select a.state_alpha as state 
 ,a.fmr2 as two_bdrm_2017
 ,b.fmr_2 as two_bdrm_2019
@@ -50,7 +50,7 @@ from fmr40_2017 a
     on a.state_alpha = c.state_alpha
 group by a.state_alpha, a.fmr2, b.fmr_2, c.fmr_2
 
-select * from MedianRentComparison2017_2019_2021
+select * from AverageRentComparison2017_2019_2021
 
 --querying the new view in order to compare average rent across the three years
 
@@ -58,7 +58,7 @@ select state
 ,avg(two_bdrm_2017) as average_two_bdrm_2017
 ,avg(two_bdrm_2019) as average_two_bdrm_2019
 ,avg(two_bdrm_2021) as average_two_bdrm_2021
-from MedianRentComparison2017_2019_2021
+from AverageRentComparison2017_2019_2021
 group by state
 order by avg(two_bdrm_2021) DESC
 
@@ -68,7 +68,7 @@ order by avg(two_bdrm_2021) DESC
 
 select  state
 ,avg(two_bdrm_2021) - avg(two_bdrm_2019) as difference_in_price
-from MedianRentComparison2017_2019_2021
+from AverageRentComparison2017_2019_2021
 group by state
 order by avg(two_bdrm_2021) - avg(two_bdrm_2019) DESC
 
@@ -78,7 +78,7 @@ order by avg(two_bdrm_2021) - avg(two_bdrm_2019) DESC
 
 select  state
 ,avg(two_bdrm_2019) - avg(two_bdrm_2017) as difference_in_price
-from MedianRentComparison2017_2019_2021
+from AverageRentComparison2017_2019_2021
 group by state
 order by avg(two_bdrm_2019) - avg(two_bdrm_2017) DESC
 
@@ -88,7 +88,7 @@ order by avg(two_bdrm_2019) - avg(two_bdrm_2017) DESC
 
 select  state
 ,avg(two_bdrm_2021) - avg(two_bdrm_2017) as difference_in_price
-from MedianRentComparison2017_2019_2021
+from AverageRentComparison2017_2019_2021
 group by state
 order by avg(two_bdrm_2021) - avg(two_bdrm_2017) DESC
 
@@ -98,17 +98,17 @@ order by avg(two_bdrm_2021) - avg(two_bdrm_2017) DESC
 select  state
 ,100*(avg(two_bdrm_2019) - avg(two_bdrm_2017))/avg(two_bdrm_2017) as percentage_increase_in_price_17_19
 ,100*(avg(two_bdrm_2021) - avg(two_bdrm_2019))/avg(two_bdrm_2019) as percentage_increase_in_price_19_21
-from MedianRentComparison2017_2019_2021
+from AverageRentComparison2017_2019_2021
 group by state
 order by 100*(avg(two_bdrm_2019) - avg(two_bdrm_2017))/avg(two_bdrm_2017) DESC
 
 
---diference in percentage increase
+--difference in percentage increase
 
 
 select  state
 ,100*(avg(two_bdrm_2021) - avg(two_bdrm_2019))/avg(two_bdrm_2019) - 100*(avg(two_bdrm_2019) - avg(two_bdrm_2017))/avg(two_bdrm_2017)  as difference_in_percentage_increase_in_price_21_17
-from MedianRentComparison2017_2019_2021
+from AverageRentComparison2017_2019_2021
 group by state
 order by 100*(avg(two_bdrm_2021) - avg(two_bdrm_2019))/avg(two_bdrm_2019) - 100*(avg(two_bdrm_2019) - avg(two_bdrm_2017))/avg(two_bdrm_2017) DESC
 
